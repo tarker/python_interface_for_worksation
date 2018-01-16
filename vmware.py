@@ -21,6 +21,7 @@ class VMware:
         DEFAULT_VMRUN_PATH: значение по умолчанию для атрибута pathToVmrun
         DEFAULT_MAX_WAIT_TIME: значение по умолчанию для атрибута maxWaitTime
         DEFAULT_MAX_CLONE_TIME : значение для атрибутка maxCloneTime
+        DEFAULT_MAX_ATTEMPT : количество повторов выполнения команды в случае ошибки 'Unable conect to hsot'
     Атрибуты:
         pathToVmrun: путь  vmrun.exe
         pathToVMX: путь к конфиг файлу машины
@@ -45,7 +46,7 @@ class VMware:
         stop(self): выключает машину
 
         ---Операции с гостевой ОС---
-        run(self, args, waitTime=0, interactive=True, activeWindow=True):
+        run(self, args, maxWaitTime=0, interactive=True, activeWindow=True):
             Запускает в гостевой ОС программу (args[0]) с параметрами (args[1:]).
             Подробнее в описании метода.
         copyTo(self, source, target): копируем в гостевую ос папку или файл source/target - путь источника/назначения
@@ -117,7 +118,7 @@ class VMware:
         Останавливает машину.
         Возвращает
             удалось остановить: 0 (int)
-            уже остановлена: 0
+            уже остановлена: Сообщение от vmrun (str)
             Fail: Сообщение от vmrun (str)
         """
         return self._vmCommand("stop", params=["soft"])
@@ -131,7 +132,7 @@ class VMware:
                 Тип аргумента:  список/кортеж строк или одна строка
                 Если задается списком, args[0] = Путь к программе, args[1:] аргументы программы
                 Если задаяется строкой, args = "Путь_к_программе аргумент1 ... аргументN"
-            waitTime: Время, которое ожидаем завершения процесса (int),
+            maxWaitTime: Время, которое ожидаем завершения процесса (int),
                 если waitTime = 0 - процесс запускается в фоне
             interactive: запуска графической оболочки вызываемой программы в гостевой ОС (bool)
             activeWindow: при значении True устанавливает фокус на вызванноую программу (bool)
