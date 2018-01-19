@@ -299,9 +299,17 @@ def report_write(test_report, report_file):
 
 # формирование allure отчета о запуске теста на тачке
 def allure_report_write(test_report, report_dir, session):
+    # дич с конвертацией времени
+    test_report['start'] = int(test_report['start']) * 1000
     test_report['stop'] = int(test_report['stop']) * 1000
+    start = str(test_report['start'])
+    start = start[:10] + start[11:14]
+    stop = str(test_report['stop'])
+    stop = stop[:10] + stop[11:14]
+
+    # ядро отчета
     report = {
-        'name': "{0[test_name]}_{0[stand_name]}".format(test_report),
+        'name': "{0[test_name]}".format(test_report),
         'status': "passed" if test_report['result'] == "Завершен [OK]" else "failed",
               'statusDetails': {'message': test_report['result'], 'trace': ''},
               'steps': [
@@ -310,15 +318,19 @@ def allure_report_write(test_report, report_dir, session):
                    'statusDetails': {'message': test_report['prepare'], 'trace': ''}
                    }
               ],
+        'start': start,
+        'stop': stop,
         'fullName': "{0[test_name]}_({0[test_fullname]}){0[stand_name]}_({0[stand_fullname]})".format(test_report),
         'labels': [
-            {'name': "story", 'value': session},
-            {'name': "feature", 'value': "VMWare отчет"},
+            {'name': "epic", 'value': "VMWare отчет"},
+            {'name': "feature", 'value': session},
+            {'name': "story", 'value': "{0[stand_name]}".format(test_report)},
             {'name': "framework", 'value': "testRunner"},
             {'name': "package", 'value': "{0[test_name]}_{0[stand_name]}".format(test_report)}
         ]
     }
 
+    # детализация по степам
     for step in test_report['step']:
         step_data = {
             'name': step,

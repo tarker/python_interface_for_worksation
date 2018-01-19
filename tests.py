@@ -53,7 +53,7 @@ tests = {
     },
     'install': {
         'name': "Тихая установка",
-        'fullname': "Тихая установка, лицензия без TLS",
+        'fullname': "Тихая установка",
         'step': ["C:\\python\\scripts\\pytest.exe .\\tests\\silent_install.py "
                   "--distr=.\\pki_client_installer.exe --license=.\\lic\\full.itcslic "
                   "--alluredir .\\report"],
@@ -68,11 +68,22 @@ tests = {
     },
 
     'full_deb_sudo': {
-        'name': "Полная инсталяция скриптом (deb)",
+        'name': "Полная инсталяция скриптом от sudo(deb)",
         'fullname': "Полная инсталяция скриптом (deb)",
         'step': ["/usr/local/bin/pytest ./tests/install.py --distr=./ --license=./wutu.itcslic "
                  "--sudo=11111111 --alluredir=./reports "
                  "-k full_deb_sudo"],
+        'report': ["./reports"],
+        'delete': "ready_os",
+        'take': "ready_os"
+    },
+
+    'full_rpm_sudo': {
+        'name': "Полная инсталяция скриптом от sudo (rpm)",
+        'fullname': "Полная инсталяция скриптом от sudo (rpm)",
+        'step': ["/usr/local/bin/pytest ./tests/install.py --distr=./ --license=./wutu.itcslic "
+                 "--sudo=11111111 --alluredir=./reports "
+                 "-k full_rpm_sudo"],
         'report': ["./reports"],
         'delete': "ready_os",
         'take': "ready_os"
