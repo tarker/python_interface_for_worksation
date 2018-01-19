@@ -299,32 +299,32 @@ def report_write(test_report, report_file):
 
 # формирование allure отчета о запуске теста на тачке
 def allure_report_write(test_report, report_dir, session):
-    start = str(test_report['start'])
-    start = start[:10] + start[11:14]
-    stop  = str(test_report['stop'])
-    stop  = stop[:10] + stop[11:14]
     test_report['stop'] = int(test_report['stop']) * 1000
-    report = {'name': "{0[test_name]}_{0[stand_name]}".format(test_report),
-              'status': "passed" if test_report['result'] == "Завершен [OK]" else "failed",
+    report = {
+        'name': "{0[test_name]}_{0[stand_name]}".format(test_report),
+        'status': "passed" if test_report['result'] == "Завершен [OK]" else "failed",
               'statusDetails': {'message': test_report['result'], 'trace': ''},
-              'steps': [{'name': "Подготовка стенда",
-                         'status': "passed" if test_report['prepare'] == "Подготовлен [OK]" else "failed",
-                         'statusDetails': {'message': test_report['prepare'], 'trace': ''},
-                         'start': start,'stop': start}],
-              'start': start,
-              'stop': stop,
-              'fullName': "{0[test_name]}_({0[test_fullname]}){0[stand_name]}_({0[stand_fullname]})".format(test_report),
-              'labels': [{'name': "story", 'value': session},
-                         {'name': "feature", 'value': "VMWare отчет"},
-                         {'name': "framework", 'value': "testRunner"},
-                         {'name': "package", 'value': "{0[test_name]}_{0[stand_name]}".format(test_report)}]}
+              'steps': [
+                  {'name': "Подготовка стенда",
+                   'status': "passed" if test_report['prepare'] == "Подготовлен [OK]" else "failed",
+                   'statusDetails': {'message': test_report['prepare'], 'trace': ''}
+                   }
+              ],
+        'fullName': "{0[test_name]}_({0[test_fullname]}){0[stand_name]}_({0[stand_fullname]})".format(test_report),
+        'labels': [
+            {'name': "story", 'value': session},
+            {'name': "feature", 'value': "VMWare отчет"},
+            {'name': "framework", 'value': "testRunner"},
+            {'name': "package", 'value': "{0[test_name]}_{0[stand_name]}".format(test_report)}
+        ]
+    }
 
     for step in test_report['step']:
-        step_data = {'name': step,
-                     'status': "passed" if test_report['step'][step] == "[OK]" else "failed",
-                     'statusDetails': {'message': test_report['step'][step], 'trace': ''},
-                     'start': start,
-                     'stop': start}
+        step_data = {
+            'name': step,
+            'status': "passed" if test_report['step'][step] == "[OK]" else "failed",
+            'statusDetails': {'message': test_report['step'][step], 'trace': ''},
+        }
         report['steps'].append(step_data)
     report_data = str(json.dumps(report))
 
