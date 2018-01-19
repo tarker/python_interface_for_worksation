@@ -61,35 +61,21 @@ tests = {
         'delete': "ready_os",
         'take': "ready_os"
     },
-    'update': {
-        'name': "Тихая установка",
-        'fullname': "Тихая установка, лицензия без TLS",
-        'step': ["C:\\python\\scripts\\pytest.exe .\\tests\\silent_install.py "
-                  "--distr=.\\pki_client_installer.exe --license=.\\lic\\full.itcslic "
-                  "--alluredir .\\report"],
-        'report': [".\\report"],
-    },
-
-    'cert_unit': {
-        'name': "Запрос на сертификат",
-        'delay': 420,
-        'fullname': "NUnit test: создание запроса на сертификат",
-        'step': ['.\\NUnit\\nunit3-console.exe'
-                  ' .\\NUnit\\client.tests.dll --where class=~"CertificateUnitCreateRequest"'
-                  ' --work=.\\NUnit'],
-        'report': [".\\NUnit\\TestResult.xml", ".\\Documents\\Test1CU.p10",
-                    ".\\Documents\\Test2CU.p10", ".\\Documents\\Test3CU.p10",
-                    ".\\Documents\\Test4CU.p10"],
-    },
-
-
 
     # nix tests
-
-
-
     'simple': {
         'name': "simple_test"
+    },
+
+    'full_deb_sudo': {
+        'name': "Полная инсталяция скриптом (deb)",
+        'fullname': "Полная инсталяция скриптом (deb)",
+        'step': ["/usr/local/bin/pytest ./tests/install.py --distr=./ --license=./wutu.itcslic "
+                 "--sudo=11111111 --alluredir=./reports "
+                 "-k full_deb_sudo"],
+        'report': ["./reports"],
+        'delete': "ready_os",
+        'take': "ready_os"
     }
 }
 groups = {

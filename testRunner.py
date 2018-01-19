@@ -426,11 +426,10 @@ if __name__ == '__main__':
             search_pattern = "{}\\**\\*.{}".format(report, ext)
             for file in glob(search_pattern, recursive=True):
                 # кое-кто не умеет писать нормальные регулярные выражения...
-                try:
-                    copy(file, report + "\\allure_input")
-                # поэтому не может исключить \\allure_input из поиска...
-                except SameFileError:
-                    pass
+                if "allure_input\\" in file:
+                    continue
+                copy(file, report + "\\allure_input")
+
         # генерим отчет
         log("Генерируем allure-отчет", 1)
         os.system("{0} generate --clean {1}\\allure_input -o {1}\\allure_output".format(args.allure_bin, report))
