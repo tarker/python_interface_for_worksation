@@ -310,6 +310,7 @@ class VMware:
                     continue
             # в остальных случаях возвращаем вывод vm.run
             else:
-                return 0
+                return message
+        return "Не удалось выполнить команду vmrun {} с {} попытки".format(command, self.maxAttempt)
 
 

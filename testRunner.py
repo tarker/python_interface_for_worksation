@@ -437,7 +437,6 @@ if __name__ == '__main__':
         for ext in ("xml", "json", "attach", "txt", "png"):
             search_pattern = "{}\\**\\*.{}".format(report, ext)
             for file in glob(search_pattern, recursive=True):
-                # кое-кто не умеет писать нормальные регулярные выражения...
                 if "allure_input\\" in file:
                     continue
                 copy(file, report + "\\allure_input")
