@@ -3,7 +3,7 @@ import os
 import stands
 import tests
 import json
-from shutil import copy, SameFileError
+from shutil import copy
 from argparse import ArgumentParser
 from logger import Log
 from vmware import VMware

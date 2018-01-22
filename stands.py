@@ -174,7 +174,7 @@ stands = {
         'snapshot': "clean_os",
         'fullname': "Debian 9.3 x64 ",
         'host_dir': "D:\\projects\\toNIXGuest",
-        'guest_dir': "/home/tester/Deb9.3.64"
+        'guest_dir': "/home/tester/Deb9364"
     },
     'Deb7.11.64': {
         'path': r"c:\AT\Deb7.11.64\Deb7.11.64.vmx",
@@ -186,6 +186,16 @@ stands = {
         'host_dir': "D:\\projects\\toNIXGuest",
         'guest_dir': "/home/tester/Deb71164"
     },
+
+    'Astra1.5.64': {
+        'path': r"c:\AT\Astra1.5.64\Astra1.5.64.vmx",
+        'name': "Astra 1.5 x64 ",
+        'user': "tester",
+        'pass': "11111111",
+        'snapshot': "clean_os",
+        'host_dir': "D:\\projects\\toNIXGuest",
+        'guest_dir': "/home/tester/Astra1564"
+    },
 }
 
 
@@ -195,7 +205,7 @@ groups = {
     
 
     'clean_os': ['w10_64_clean_os',  'w7_64_clean_os', 'w8.1_64_clean_os', 'w8_86_clean_os', 'w7_32_clean_os', 'w2012r2_clean_os'],
-    'nix_clean_os': ['Deb9_3_64',  'Deb7.11.64'],
+    'nix_clean_os': ['Deb9_3_64',  'Deb7.11.64', "Astra1.5.64"],
     'update': ['w7_32_update', 'w7_64_update', 'w8_86_update', 'w8.1_64_update', 'w2012r2_update', 'w10_64_update'],
     'ready_os': ['w7_32_ready_os', 'w7_64_ready_os', 'w8_86_ready_os', 'w8.1_64_ready_os', 'w2012r2_ready_os', 'w10_64_ready_os'],
     'demo_group': ['w7_32_clean_os', 'w10_64_clean_os']
