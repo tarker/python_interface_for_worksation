@@ -1,13 +1,31 @@
 import time
 import os
-import stands
-import tests
 import json
+import configparser
 from shutil import copy
 from argparse import ArgumentParser
 from logger import Log
 from vmware import VMware
 from glob import glob
+
+
+def ini_to_dict(path_to_ini):
+    ini = configparser.ConfigParser()
+    ini.read(path_to_ini, encoding='utf-8')
+    section_names = list(ini.sections())
+    section_data = []
+    for section in ini.sections():
+        options = list(ini[section])
+        values = list(ini[section].values())
+        section_data.append(dict(zip(options, values)))
+    dic = dict(zip(section_names, section_data))
+
+    # парсим строки списков стендов/тестов в группах в list
+    if 'groups' in dic.keys():
+        for group in dic['groups']:
+            dic['groups'][group] = [stand.strip(" \"\'[]") for stand in dic['groups'][group].split(",")]
+
+    return dic
 
 
 def check_stand(stand):
@@ -74,7 +92,7 @@ def check_test(test):
         if test[key] is None:
             test[key] = []
         elif type(test[key]) is str:
-            test[key] = test[key].split(" ")
+            test[key] = [s.strip(" \"\'[]") for s in test[key].split(",")]
         elif not (type(test[key]) is list):
             return "параметр '{}' должен быть строкой или списком".format(key)
 
@@ -349,6 +367,8 @@ if __name__ == '__main__':
 
     # разбираем параметры строки
     parser = ArgumentParser()
+    parser.add_argument('-i', '--ini_path', type=str, default=os.path.normpath(os.path.dirname(__file__)),
+                        help="Путь к файлам stands.ini и config.ini")
     parser.add_argument('-t', '--test', nargs='+', default=[],
                         help="Имя теста или нескольких тестов через пробел")
     parser.add_argument('-s', '--stand', nargs='+', default=[],
@@ -384,28 +404,49 @@ if __name__ == '__main__':
                 exit(100)
     log = Log(report + "\\" + "testRunner.log", args.log_level, args.verbose).write
 
+
+    # проверяем наличие файлов тестов и стендов
+    ini = dict(
+        stands=args.ini_path.rstrip("\\") + "\\stands.ini",
+        tests=args.ini_path.rstrip("\\") + "\\tests.ini"
+    )
+    if not os.path.isfile(ini['stands']):
+        log("Не найден файл stands.ini по пути".format(ini['stands']), 0)
+        exit(101)
+    if not os.path.isfile(ini['tests']):
+        log("Не найден файл tests.ini по пути".format(ini['tests']), 0)
+        exit(102)
+
+    # читаем ini
+    stands = ini_to_dict(ini['stands'])
+    tests = ini_to_dict(ini['tests'])
+
     # проверяем корректность задания тестов и групп тестов
     test_list = []
     for group in args.test_group:
-        if group in tests.groups:
-            args.test += tests.groups[group]
+        if group in tests['groups']:
+            args.test += tests['groups'][group]
         else:
-            log("В файле тестов не найдена групп {}".format(group), 0)
+            log("В файле тестов не найдена группа {}".format(group), 0)
     for test in args.test:
-        if test in tests.tests:
+        if test in tests:
             test_list.append(test)
         else:
             log("В файле тестов не найден тест {}".format(test), 0)
 
+    if "groups" in test_list:
+        log("Среди идентификаторов теста указан 'groups'. 'groups' - зарезервированное слово ", 0)
+        exit(200)
+
     # проверяем корректность задания стендов и групп стендов
     stand_list = []
     for group in args.stand_group:
-        if group in stands.groups:
-            args.stand += stands.groups[group]
+        if group in stands['groups']:
+            args.stand += stands['groups'][group]
         else:
             log("В файле стендов не найдена группа {}".format(group), 0)
     for stand in args.stand:
-        if stand in stands.stands:
+        if stand in stands:
             stand_list.append(stand)
         else:
             log("В файле стендов не найден стенд {}".format(stand), 0)
@@ -423,7 +464,7 @@ if __name__ == '__main__':
         for test in test_list:
             # запуск и получение отчета по тесту
             try:
-                test_report = run(tests.tests[test], stands.stands[stand])
+                test_report = run(tests[test], stands[stand])
             except KeyError:
                 log("Не правильно указан параметр стенда {} или {}".format(test, stand), 0)
                 continue
