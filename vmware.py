@@ -299,7 +299,6 @@ class VMware:
     def _vmCommand(self, command, auth=[], params=[], maxWaitTime=None):
         if maxWaitTime is None:
             maxWaitTime=self.maxWaitTime
-
         for attempt in range(0, self.maxAttempt):
             # формирует строку запуска vmrun.exe
             # получаем процесс
@@ -323,6 +322,6 @@ class VMware:
             # в остальных случаях возвращаем вывод vm.run
             else:
                 return message
-        return "Не удалось выполнить команду vmrun {} с {} попытки".format(command, self.maxAttempt)
+        return "Не удалось выполнить команду vmrun {} с {} попытки".format(command, str(self.maxAttempt))
 
 
