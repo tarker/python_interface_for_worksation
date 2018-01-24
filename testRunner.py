@@ -172,10 +172,13 @@ def prepare(stand):
         return vm
 
     log("Пробуем скопировать необходимые файлы", 1)
-
     action = vm.copyTo(stand['host_dir'], stand['guest_dir'])
     if action:
-        log("Не удалось скопировать необходимые файлы. Выключаем стенд:{}").format(vm.stop())
+        log("Не удалось скопировать необходимые файлы:{}").format(action)
+        try:
+            log("Выключаем стенд:{}").format(str(vm.stop()))
+        except Exception as ex:
+            log(str(ex))
         return "ошибка копирования vmrun.exe:{}".format(action)
     else:
         log("копирование завершено")
@@ -459,7 +462,6 @@ if __name__ == '__main__':
     with open(rep_file, "a") as report_file:
         report_file.write("Отчет по тестам: {} на машинах {}\n".format(test_list, stand_list))
         report_file.write("Коментарий: {}\n\n".format(args.comment))
-
     for stand in stand_list:
         for test in test_list:
             # запуск и получение отчета по тесту
