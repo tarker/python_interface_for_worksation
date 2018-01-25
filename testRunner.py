@@ -175,6 +175,7 @@ def prepare(stand):
     action = vm.copyTo(stand['host_dir'], stand['guest_dir'])
     if action:
         log("Не удалось скопировать необходимые файлы:{}").format(action)
+        # тут есть проблемы, которую пока не решил =)
         try:
             log("Выключаем стенд:{}").format(str(vm.stop()))
         except Exception as ex:
@@ -455,6 +456,7 @@ if __name__ == '__main__':
             log("В файле стендов не найден стенд {}".format(stand), 0)
 
     # поехали
+    log("\n\n{0}[{1}]{0}".format("-"*20, time.ctime()), 1)
     log("Запуск тестов: {} на машинах {}".format(test_list, stand_list), 1)
     log("Коментарий: {}".format(args.comment), 1)
     rep_file = "{}\\report_{}.log".format(report, time.strftime("%H%M%S"))
